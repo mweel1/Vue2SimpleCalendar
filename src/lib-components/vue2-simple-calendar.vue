@@ -4,7 +4,7 @@
       <div class="monthHeader">
         <div class="monthWrapper">
           <div class="monthHeaderLeft">
-            <button @click.prevent="moveMonth(-1)" style="height: 100%">
+            <button @click.prevent="moveMonth(-1)" :class="buttonClass">
               <
             </button>
           </div>
@@ -13,7 +13,7 @@
             {{ _startDate.getFullYear() }}
           </div>
           <div class="monthHeaderYear">
-            <button @click.prevent="moveMonth(1)" style="height: 100%">
+            <button @click.prevent="moveMonth(1)" :class="buttonClass">
               >
             </button>
           </div>
@@ -41,6 +41,7 @@ export default /*#__PURE__*/ {
     selected: { type: Function, default: () => false },
     selectableClass: { type: String, default: "selectable" },
     nonSelectableClass: { type: String, default: "nonSelectable" },
+    buttonClass: { type: String, default: "nonSelectable" },
     startDate: { type: Date, default: () => new Date() },
   },
   data() {

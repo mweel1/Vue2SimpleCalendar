@@ -87,6 +87,9 @@ function _nonIterableRest() {
 //
 //
 //
+//
+//
+//
 var script = {
   name: "vue2-simple-calendar",
   props: {
@@ -143,7 +146,6 @@ var script = {
     },
     getDayClasses: function getDayClasses(d) {
       var c;
-      console.log(d);
       if (this.isSelected(d)) c = "selected ";else if (this.isSelectable(d)) c = "selectable ";else c = "nonSelectable ";
 
       if (this.isToday(d)) {
@@ -152,7 +154,12 @@ var script = {
 
       return c;
     },
-    daySelected: function daySelected(day) {
+    daySelected: function daySelected(day, css) {
+      // leave if this isnt selectable, didnt use isSelectable because that might not be performant
+      if (css.indexOf("nonSelectable") > -1) {
+        return;
+      }
+
       this.selectedDay = day;
       var dt = new Date(this._startDate.getFullYear(), this._startDate.getMonth(), day);
       this.$emit("daySelected", dt);
@@ -314,12 +321,12 @@ var __vue_render__ = function __vue_render__() {
 
   return _vm.calendar ? _c('div', {
     staticClass: "vue2-simple"
-  }, [_vm._ssrNode("<div class=\"wrapper\" data-v-e0162dfa><div class=\"monthHeader\" data-v-e0162dfa><div class=\"monthWrapper\" data-v-e0162dfa><div class=\"monthHeaderLeft\" data-v-e0162dfa><button style=\"height: 100%\" data-v-e0162dfa>\n            &lt;\n          </button></div> " + (_vm._startDate ? "<div class=\"monthHeaderMonth\" data-v-e0162dfa>" + _vm._ssrEscape("\n          " + _vm._s(_vm._startDate.toLocaleString("default", {
+  }, [_vm._ssrNode("<div class=\"wrapper\" data-v-19b9775c><div class=\"monthHeader\" data-v-19b9775c><div class=\"monthWrapper\" data-v-19b9775c><div class=\"monthHeaderLeft\" data-v-19b9775c><button style=\"height: 100%\" data-v-19b9775c>\n            &lt;\n          </button></div> " + (_vm._startDate ? "<div class=\"monthHeaderMonth\" data-v-19b9775c>" + _vm._ssrEscape("\n          " + _vm._s(_vm._startDate.toLocaleString("default", {
     month: "long"
-  })) + "\n          " + _vm._s(_vm._startDate.getFullYear()) + "\n        ") + "</div>" : "<!---->") + " <div class=\"monthHeaderYear\" data-v-e0162dfa><button style=\"height: 100%\" data-v-e0162dfa>\n            &gt;\n          </button></div></div></div> " + _vm._ssrList(_vm.days, function (d) {
-    return "<div class=\"day\" data-v-e0162dfa>" + _vm._ssrEscape(_vm._s(d)) + "</div>";
+  })) + "\n          " + _vm._s(_vm._startDate.getFullYear()) + "\n        ") + "</div>" : "<!---->") + " <div class=\"monthHeaderYear\" data-v-19b9775c><button style=\"height: 100%\" data-v-19b9775c>\n            &gt;\n          </button></div></div></div> " + _vm._ssrList(_vm.days, function (d) {
+    return "<div class=\"day\" data-v-19b9775c>" + _vm._ssrEscape(_vm._s(d)) + "</div>";
   }) + " " + _vm._ssrList(_vm.calendar, function (c) {
-    return "<div class=\"item\" data-v-e0162dfa><div" + _vm._ssrClass(null, _vm.getDayClasses(c)) + " data-v-e0162dfa>" + _vm._ssrEscape("\n        " + _vm._s(c) + "\n      ") + "</div></div>";
+    return "<div class=\"item\" data-v-19b9775c><div" + _vm._ssrClass(null, _vm.getDayClasses(c)) + " data-v-19b9775c>" + _vm._ssrEscape("\n        " + _vm._s(c) + "\n      ") + "</div></div>";
   }) + "</div>")]) : _vm._e();
 };
 
@@ -328,8 +335,8 @@ var __vue_staticRenderFns__ = [];
 
 var __vue_inject_styles__ = function __vue_inject_styles__(inject) {
   if (!inject) return;
-  inject("data-v-e0162dfa_0", {
-    source: ".day[data-v-e0162dfa]{font-weight:700}.item[data-v-e0162dfa]{text-align:center;width:100%}.monthHeaderMonth[data-v-e0162dfa]{font-size:1.5em;font-weight:700;padding:10px}.item>.selectable[data-v-e0162dfa]{padding:10px;border-radius:50%;color:2a96cc;border:2px solid #2a96cc;color:#2a96cc;cursor:pointer}.item>.selected[data-v-e0162dfa]{padding:10px;border-radius:50%;background-color:#2a96cc;color:#fff;border:1px solid #2a96cc}.item>.nonSelectable[data-v-e0162dfa]{color:gray}.today[data-v-e0162dfa]{font-weight:bolder;text-decoration:underline}.monthHeaderMonth[data-v-e0162dfa]{text-align:center}.monthHeaderYear[data-v-e0162dfa]{text-align:right}.monthHeader[data-v-e0162dfa]{grid-column-start:1;grid-column-end:span 7;min-width:100%;border-bottom:solid 1px #efefef;padding-bottom:10px}.monthWrapper[data-v-e0162dfa]{display:grid;grid-template-columns:50px auto 50px}.wrapper[data-v-e0162dfa]{display:grid;justify-items:center;grid-template-columns:repeat(7,40px);grid-template-rows:repeat(10,45px);gap:5px;align-items:center;justify-content:center;align-content:stretch}",
+  inject("data-v-19b9775c_0", {
+    source: ".day[data-v-19b9775c]{font-weight:700}.item[data-v-19b9775c]{text-align:center;font-size:15px;width:100%}.monthHeaderMonth[data-v-19b9775c]{font-size:1.5em;font-weight:700;padding:10px}.item>.selectable[data-v-19b9775c]{padding:10px;border-radius:50%;color:2a96cc;border:2px solid #2a96cc;color:#2a96cc;cursor:pointer}.item>.selected[data-v-19b9775c]{padding:10px;border-radius:50%;background-color:#2a96cc;color:#fff;border:1px solid #2a96cc}.item>.nonSelectable[data-v-19b9775c]{color:gray}.today[data-v-19b9775c]{font-weight:bolder;text-decoration:underline}.monthHeaderMonth[data-v-19b9775c]{text-align:center}.monthHeaderYear[data-v-19b9775c]{text-align:right}.monthHeader[data-v-19b9775c]{grid-column-start:1;grid-column-end:span 7;min-width:100%;border-bottom:solid 1px #efefef;padding-bottom:10px}.monthWrapper[data-v-19b9775c]{display:grid;grid-template-columns:50px auto 50px}.wrapper[data-v-19b9775c]{display:grid;justify-items:center;grid-template-columns:repeat(7,40px);grid-template-rows:repeat(10,45px);gap:5px;align-items:center;justify-content:center;align-content:stretch}",
     map: undefined,
     media: undefined
   });
@@ -337,10 +344,10 @@ var __vue_inject_styles__ = function __vue_inject_styles__(inject) {
 /* scoped */
 
 
-var __vue_scope_id__ = "data-v-e0162dfa";
+var __vue_scope_id__ = "data-v-19b9775c";
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-e0162dfa";
+var __vue_module_identifier__ = "data-v-19b9775c";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
