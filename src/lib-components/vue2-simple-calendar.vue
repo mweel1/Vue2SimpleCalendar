@@ -8,9 +8,9 @@
               <
             </button>
           </div>
-          <div class="monthHeaderMonth">
-            {{ date.toLocaleString("default", { month: "long" }) }}
-            {{ date.getFullYear() }}
+          <div class="monthHeaderMonth" v-if="_startDate">
+            {{ _startDate.toLocaleString("default", { month: "long" }) }}
+            {{ _startDate.getFullYear() }}
           </div>
           <div class="monthHeaderYear">
             <button @click.prevent="moveMonth(1)" style="height: 100%">
@@ -50,8 +50,8 @@ export default /*#__PURE__*/ {
     return {
       calendar: null,
       days: null,
-      date: new Date(),
-      _startDate: new Date(),
+
+      _startDate: null,
       selectedDay: null,
       selectable: true,
     };
@@ -74,7 +74,7 @@ export default /*#__PURE__*/ {
       return this.selectedDay == day;
     },
     moveMonth(a) {
-      this.date.setMonth(this.date.getMonth() + a);
+      this._startDate.setMonth(this._startDate.getMonth() + a);
       this.bind();
     },
     bind() {
@@ -82,16 +82,26 @@ export default /*#__PURE__*/ {
 
       this.calendar = [];
 
-      this._startDate = this.startDate;
+      if (!this._startDate)
+        if (!this._startDate) this._startDate = new Date();
+        else this._startDate = this.startDate;
 
       this.selectedDay = this._startDate.getDate();
 
-      let start = this._startDate.getDay();
+      //get first day of month
+
+      var firstDay = new Date(
+        this._startDate.getFullYear(),
+        this._startDate.getMonth(),
+        1
+      );
+
+      let start = firstDay.getDay();
 
       // how many days in the month
       let daysInMonth = new Date(
-        this.date.getFullYear(),
-        this.date.getMonth() + 1,
+        this._startDate.getFullYear(),
+        this._startDate.getMonth() + 1,
         0
       ).getDate();
 
