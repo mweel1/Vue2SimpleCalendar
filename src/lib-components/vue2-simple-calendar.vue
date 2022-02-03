@@ -8,9 +8,9 @@
               <
             </button>
           </div>
-          <div class="monthHeaderMonth" v-if="_startDate">
-            {{ _startDate.toLocaleString("default", { month: "long" }) }}
-            {{ _startDate.getFullYear() }}
+          <div class="monthHeaderMonth" v-if="__startDate">
+            {{ __startDate.toLocaleString("default", { month: "long" }) }}
+            {{ __startDate.getFullYear() }}
           </div>
           <div class="monthHeaderYear">
             <button @click.prevent="moveMonth(1)" :class="buttonClass">
@@ -42,28 +42,27 @@ export default /*#__PURE__*/ {
     selectableClass: { type: String, default: "selectable" },
     nonSelectableClass: { type: String, default: "nonSelectable" },
     buttonClass: { type: String, default: "nonSelectable" },
-    startDate: { type: Date, default: () => new Date() },
+    startDate: { type: Date, default: new Date() },
   },
   data() {
     return {
       calendar: null,
       days: null,
-
-      _startDate: null,
+      __startDate: new Date(),
       selectedDay: null,
       selectable: true,
     };
   },
   watch: {
-    startDate(newDate) {
-      console.log("start date watch");
-      this._startDate = new Date(newDate);
-      this.bind();
+    startDate: {
+      immediate: true,
+      handler: function (newVal, oldVal) {
+        this.__startDate = new Date(newVal);
+        this.bind();
+      },
     },
   },
-  created() {
-    this.bind();
-  },
+  created() {},
   methods: {
     isToday(d) {
       let todayDay = new Date().getDate();
@@ -72,8 +71,14 @@ export default /*#__PURE__*/ {
     getDayClasses(d) {
       let c;
 
+      var dt = new Date(
+        this.__startDate.getFullYear(),
+        this.__startDate.getMonth(),
+        d
+      );
+
       if (this.isSelected(d)) c = "selected ";
-      else if (this.isSelectable(d)) c = "selectable ";
+      else if (this.isSelectable(dt)) c = "selectable ";
       else c = "nonSelectable ";
 
       if (this.isToday(d)) {
@@ -91,8 +96,8 @@ export default /*#__PURE__*/ {
       this.selectedDay = day;
 
       var dt = new Date(
-        this._startDate.getFullYear(),
-        this._startDate.getMonth(),
+        this.__startDate.getFullYear(),
+        this.__startDate.getMonth(),
         day
       );
 
@@ -102,13 +107,13 @@ export default /*#__PURE__*/ {
       return this.selectedDay == day;
     },
     moveMonth(a) {
-      this._startDate = new Date(
-        this._startDate.getFullYear(),
-        this._startDate.getMonth() + a,
+      this.__startDate = new Date(
+        this.__startDate.getFullYear(),
+        this.__startDate.getMonth() + a,
         1
       );
-      this._startDate.setMonth(this._startDate.getMonth() + a);
-      this.$emit("monthChanged", this._startDate);
+      this.__startDate.setMonth(this.__startDate.getMonth() + a);
+      this.$emit("monthChanged", this.__startDate);
       this.bind();
     },
     bind() {
@@ -116,17 +121,13 @@ export default /*#__PURE__*/ {
 
       this.calendar = [];
 
-      if (!this._startDate)
-        if (!this._startDate) this._startDate = new Date();
-        else this._startDate = this.startDate;
-
-      this.selectedDay = this._startDate.getDate();
+      this.selectedDay = this.__startDate.getDate();
 
       //get first day of month
 
       var firstDay = new Date(
-        this._startDate.getFullYear(),
-        this._startDate.getMonth(),
+        this.__startDate.getFullYear(),
+        this.__startDate.getMonth(),
         1
       );
 
@@ -134,8 +135,8 @@ export default /*#__PURE__*/ {
 
       // how many days in the month
       let daysInMonth = new Date(
-        this._startDate.getFullYear(),
-        this._startDate.getMonth() + 1,
+        this.__startDate.getFullYear(),
+        this.__startDate.getMonth() + 1,
         0
       ).getDate();
 
@@ -152,13 +153,15 @@ export default /*#__PURE__*/ {
 </script>
 
 <style scoped>
+* {
+  font-size: 8px;
+}
+
 .day {
   font-weight: bold;
 }
 .item {
   text-align: center;
-  font-size: 15px;
-  width: 100%;
 }
 
 .monthHeaderMonth {
@@ -214,10 +217,8 @@ export default /*#__PURE__*/ {
   display: grid;
   justify-items: center;
   grid-template-columns: repeat(7, 40px);
-  grid-template-rows: repeat(10, 45px);
+  grid-template-rows: repeat(6, 40px);
   gap: 5px;
   align-items: center;
-  justify-content: center;
-  align-content: stretch;
 }
 </style>

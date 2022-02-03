@@ -15,11 +15,9 @@ export default Vue.extend({
   },
   methods: {
     isSelectable(d) {
-      return d == 15 || d == 15 || d == 10;
+      return d.getDate() == 15 || d.getDate() == 15 || d.getDate() == 10;
     },
-    daySelected(dt) {
-      console.log(dt);
-    },
+    daySelected(dt) {},
     monthChanged(dt) {
       this.startDate = new Date(dt.getFullYear(), dt.getMonth(), 15);
     },
@@ -29,6 +27,10 @@ export default Vue.extend({
 
 <template>
   <div id="app" style="margin: 10px">
+    <button @click="startDate = new Date(2025, 1, 17)">
+      Set start date to 2025-01-15
+    </button>
+    <br />
     <vue2-simple-calendar
       :isSelectable="isSelectable"
       @daySelected="daySelected"
@@ -38,8 +40,4 @@ export default Vue.extend({
   </div>
 </template>
 
-<style scoped>
-* {
-  box-sizing: border-box;
-}
-</style>
+<style scoped></style>
