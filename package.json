@@ -1,6 +1,6 @@
 {
   "name": "vue2-simpler-calendar",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "dist/vue2-simple-calendar.ssr.js",
   "browser": "dist/vue2-simple-calendar.esm.js",
