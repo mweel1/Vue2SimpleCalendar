@@ -23,7 +23,10 @@
       <div class="day" v-for="d in days">{{ d }}</div>
 
       <div class="item" v-for="c in calendar">
-        <div @click="daySelected(c)" :class="getDayClasses(c)">
+        <div
+          @click="daySelected(c, getDayClasses(c))"
+          :class="getDayClasses(c)"
+        >
           {{ c }}
         </div>
       </div>
@@ -68,7 +71,6 @@ export default /*#__PURE__*/ {
     getDayClasses(d) {
       let c;
 
-      console.log(d);
       if (this.isSelected(d)) c = "selected ";
       else if (this.isSelectable(d)) c = "selectable ";
       else c = "nonSelectable ";
@@ -79,7 +81,12 @@ export default /*#__PURE__*/ {
 
       return c;
     },
-    daySelected(day) {
+    daySelected(day, css) {
+      // leave if this isnt selectable, didnt use isSelectable because that might not be performant
+      if (css.indexOf("nonSelectable") > -1) {
+        return;
+      }
+
       this.selectedDay = day;
 
       var dt = new Date(
@@ -149,7 +156,7 @@ export default /*#__PURE__*/ {
 }
 .item {
   text-align: center;
-
+  font-size: 15px;
   width: 100%;
 }
 

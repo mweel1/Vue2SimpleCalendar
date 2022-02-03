@@ -14,8 +14,8 @@ export default Vue.extend({
     };
   },
   methods: {
-    isSelectable() {
-      return Math.random() < 0.5;
+    isSelectable(d) {
+      return d == 15 || d == 15 || d == 10;
     },
     daySelected(dt) {
       console.log(dt);

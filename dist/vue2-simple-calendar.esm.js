@@ -30,12 +30,6 @@
 //
 //
 //
-//
-//
-//
-//
-//
-//
 var script = {
   name: "vue2-simple-calendar",
   props: {
@@ -71,11 +65,37 @@ var script = {
     };
   },
 
+  watch: {
+    startDate(newDate) {
+      console.log("start date watch");
+      this._startDate = new Date(newDate);
+      this.bind();
+    }
+
+  },
+
   created() {
     this.bind();
   },
 
   methods: {
+    isToday(d) {
+      let todayDay = new Date().getDate();
+      return d == todayDay;
+    },
+
+    getDayClasses(d) {
+      let c;
+      console.log(d);
+      if (this.isSelected(d)) c = "selected ";else if (this.isSelectable(d)) c = "selectable ";else c = "nonSelectable ";
+
+      if (this.isToday(d)) {
+        c = c + "today";
+      }
+
+      return c;
+    },
+
     daySelected(day) {
       this.selectedDay = day;
       var dt = new Date(this._startDate.getFullYear(), this._startDate.getMonth(), day);
@@ -87,8 +107,11 @@ var script = {
     },
 
     moveMonth(a) {
+      this._startDate = new Date(this._startDate.getFullYear(), this._startDate.getMonth() + a, 1);
+
       this._startDate.setMonth(this._startDate.getMonth() + a);
 
+      this.$emit("monthChanged", this._startDate);
       this.bind();
     },
 
@@ -297,17 +320,13 @@ var __vue_render__ = function () {
   }), _vm._v(" "), _vm._l(_vm.calendar, function (c) {
     return _c('div', {
       staticClass: "item"
-    }, [_vm.isSelected(c) ? _c('div', {
-      staticClass: "selected"
-    }, [_vm._v(_vm._s(c))]) : _vm.isSelectable(c) ? _c('div', {
-      class: _vm.selectableClass,
+    }, [_c('div', {
+      class: _vm.getDayClasses(c),
       on: {
         "click": function ($event) {
           return _vm.daySelected(c);
         }
       }
-    }, [_vm._v("\n        " + _vm._s(c) + "\n      ")]) : _c('div', {
-      staticClass: "nonSelectableClass"
     }, [_vm._v("\n        " + _vm._s(c) + "\n      ")])]);
   })], 2)]) : _vm._e();
 };
@@ -317,8 +336,8 @@ var __vue_staticRenderFns__ = [];
 
 const __vue_inject_styles__ = function (inject) {
   if (!inject) return;
-  inject("data-v-005ac314_0", {
-    source: ".day[data-v-005ac314]{text-align:center;padding:2px;text-align:center;width:40px;margin-top:25px;font-weight:700;margin-bottom:15px}.item[data-v-005ac314]{text-align:center;padding:0;padding-right:10px;padding-left:10px;width:41px;margin-bottom:4px}.monthHeaderMonth[data-v-005ac314]{font-size:1.5em;font-weight:700;padding:10px}.item>.selectable[data-v-005ac314]{padding:10px;border-radius:50%;color:2a96cc;border:2px solid #2a96cc;color:#2a96cc;cursor:pointer}.item>.selected[data-v-005ac314]{padding:10px;border-radius:50%;background-color:#2a96cc;color:#fff;border:1px solid #2a96cc}.item>.nonSelectableClass[data-v-005ac314]{padding:10px;color:gray}.monthHeaderMonth[data-v-005ac314]{text-align:center}.monthHeaderYear[data-v-005ac314]{text-align:right}.monthHeader[data-v-005ac314]{grid-column-start:1;grid-column-end:span 7;min-width:100%;border-bottom:solid 1px #ccc}.monthWrapper[data-v-005ac314]{display:grid;margin:5px;grid-template-columns:50px auto 50px}.wrapper[data-v-005ac314]{display:grid;justify-items:center;grid-template-columns:repeat(7,1fr)}.day[data-v-005ac314]{font-weight:400}",
+  inject("data-v-e0162dfa_0", {
+    source: ".day[data-v-e0162dfa]{font-weight:700}.item[data-v-e0162dfa]{text-align:center;width:100%}.monthHeaderMonth[data-v-e0162dfa]{font-size:1.5em;font-weight:700;padding:10px}.item>.selectable[data-v-e0162dfa]{padding:10px;border-radius:50%;color:2a96cc;border:2px solid #2a96cc;color:#2a96cc;cursor:pointer}.item>.selected[data-v-e0162dfa]{padding:10px;border-radius:50%;background-color:#2a96cc;color:#fff;border:1px solid #2a96cc}.item>.nonSelectable[data-v-e0162dfa]{color:gray}.today[data-v-e0162dfa]{font-weight:bolder;text-decoration:underline}.monthHeaderMonth[data-v-e0162dfa]{text-align:center}.monthHeaderYear[data-v-e0162dfa]{text-align:right}.monthHeader[data-v-e0162dfa]{grid-column-start:1;grid-column-end:span 7;min-width:100%;border-bottom:solid 1px #efefef;padding-bottom:10px}.monthWrapper[data-v-e0162dfa]{display:grid;grid-template-columns:50px auto 50px}.wrapper[data-v-e0162dfa]{display:grid;justify-items:center;grid-template-columns:repeat(7,40px);grid-template-rows:repeat(10,45px);gap:5px;align-items:center;justify-content:center;align-content:stretch}",
     map: undefined,
     media: undefined
   });
@@ -326,7 +345,7 @@ const __vue_inject_styles__ = function (inject) {
 /* scoped */
 
 
-const __vue_scope_id__ = "data-v-005ac314";
+const __vue_scope_id__ = "data-v-e0162dfa";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
