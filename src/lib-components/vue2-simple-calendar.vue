@@ -51,13 +51,21 @@ export default /*#__PURE__*/ {
       __startDate: new Date(),
       selectedDay: null,
       selectable: true,
+      noDaySelection: false,
     };
   },
   watch: {
     startDate: {
       immediate: true,
       handler: function (newVal, oldVal) {
-        this.__startDate = new Date(newVal);
+        if (newVal) {
+          this.noDaySelection = false;
+          this.__startDate = new Date(newVal);
+        } else {
+          this.noDaySelection = true;
+          this.__startDate = new Date();
+        }
+
         this.bind();
       },
     },
@@ -107,11 +115,14 @@ export default /*#__PURE__*/ {
       return this.selectedDay == day;
     },
     moveMonth(a) {
+      this.noDaySelection = true;
+
       this.__startDate = new Date(
         this.__startDate.getFullYear(),
         this.__startDate.getMonth() + a,
         1
       );
+
       this.__startDate.setMonth(this.__startDate.getMonth() + a);
       this.$emit("monthChanged", this.__startDate);
       this.bind();
@@ -121,7 +132,12 @@ export default /*#__PURE__*/ {
 
       this.calendar = [];
 
-      this.selectedDay = this.__startDate.getDate();
+      if (!this.noDaySelection) {
+        // we had to set the date so
+        this.selectedDay = this.__startDate.getDate();
+      } else {
+        this.selectedDay = null;
+      }
 
       //get first day of month
 
@@ -153,10 +169,6 @@ export default /*#__PURE__*/ {
 </script>
 
 <style scoped>
-* {
-  font-size: 8px;
-}
-
 .day {
   font-weight: bold;
 }

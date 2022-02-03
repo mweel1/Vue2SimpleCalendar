@@ -10,16 +10,16 @@ export default Vue.extend({
   // }
   data() {
     return {
-      startDate: new Date(2021, 1, 15),
+      startDate: null,
     };
   },
   methods: {
     isSelectable(d) {
-      return d.getDate() == 15 || d.getDate() == 15 || d.getDate() == 10;
+      return d.getDate() == 15 || d.getDate() == 22 || d.getDate() == 10;
     },
     daySelected(dt) {},
     monthChanged(dt) {
-      this.startDate = new Date(dt.getFullYear(), dt.getMonth(), 15);
+      this.startDate = new Date(dt.getFullYear(), dt.getMonth(), 20);
     },
   },
 });

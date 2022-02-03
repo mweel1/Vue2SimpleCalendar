@@ -58,7 +58,7 @@ var script = {
     },
     startDate: {
       type: Date,
-      default: () => new Date()
+      default: new Date()
     }
   },
 
@@ -66,24 +66,23 @@ var script = {
     return {
       calendar: null,
       days: null,
-      _startDate: null,
+      __startDate: new Date(),
       selectedDay: null,
       selectable: true
     };
   },
 
   watch: {
-    startDate(newDate) {
-      console.log("start date watch");
-      this._startDate = new Date(newDate);
-      this.bind();
+    startDate: {
+      immediate: true,
+      handler: function (newVal, oldVal) {
+        this.__startDate = new Date(newVal);
+        this.bind();
+      }
     }
-
   },
 
-  created() {
-    this.bind();
-  },
+  created() {},
 
   methods: {
     isToday(d) {
@@ -93,7 +92,8 @@ var script = {
 
     getDayClasses(d) {
       let c;
-      if (this.isSelected(d)) c = "selected ";else if (this.isSelectable(d)) c = "selectable ";else c = "nonSelectable ";
+      var dt = new Date(this.__startDate.getFullYear(), this.__startDate.getMonth(), d);
+      if (this.isSelected(d)) c = "selected ";else if (this.isSelectable(dt)) c = "selectable ";else c = "nonSelectable ";
 
       if (this.isToday(d)) {
         c = c + "today";
@@ -109,7 +109,7 @@ var script = {
       }
 
       this.selectedDay = day;
-      var dt = new Date(this._startDate.getFullYear(), this._startDate.getMonth(), day);
+      var dt = new Date(this.__startDate.getFullYear(), this.__startDate.getMonth(), day);
       this.$emit("daySelected", dt);
     },
 
@@ -118,24 +118,23 @@ var script = {
     },
 
     moveMonth(a) {
-      this._startDate = new Date(this._startDate.getFullYear(), this._startDate.getMonth() + a, 1);
+      this.__startDate = new Date(this.__startDate.getFullYear(), this.__startDate.getMonth() + a, 1);
 
-      this._startDate.setMonth(this._startDate.getMonth() + a);
+      this.__startDate.setMonth(this.__startDate.getMonth() + a);
 
-      this.$emit("monthChanged", this._startDate);
+      this.$emit("monthChanged", this.__startDate);
       this.bind();
     },
 
     bind() {
       this.days = ["S", "M", "T", "W", "T", "F", "S"];
       this.calendar = [];
-      if (!this._startDate) if (!this._startDate) this._startDate = new Date();else this._startDate = this.startDate;
-      this.selectedDay = this._startDate.getDate(); //get first day of month
+      this.selectedDay = this.__startDate.getDate(); //get first day of month
 
-      var firstDay = new Date(this._startDate.getFullYear(), this._startDate.getMonth(), 1);
+      var firstDay = new Date(this.__startDate.getFullYear(), this.__startDate.getMonth(), 1);
       let start = firstDay.getDay(); // how many days in the month
 
-      let daysInMonth = new Date(this._startDate.getFullYear(), this._startDate.getMonth() + 1, 0).getDate();
+      let daysInMonth = new Date(this.__startDate.getFullYear(), this.__startDate.getMonth() + 1, 0).getDate();
 
       for (let i = 0; i < start; i++) {
         this.calendar.push("");
@@ -306,11 +305,11 @@ var __vue_render__ = function () {
         return _vm.moveMonth(-1);
       }
     }
-  }, [_vm._v("\n            <\n          ")])]), _vm._v(" "), _vm._startDate ? _c('div', {
+  }, [_vm._v("\n            <\n          ")])]), _vm._v(" "), _vm.__startDate ? _c('div', {
     staticClass: "monthHeaderMonth"
-  }, [_vm._v("\n          " + _vm._s(_vm._startDate.toLocaleString("default", {
+  }, [_vm._v("\n          " + _vm._s(_vm.__startDate.toLocaleString("default", {
     month: "long"
-  })) + "\n          " + _vm._s(_vm._startDate.getFullYear()) + "\n        ")]) : _vm._e(), _vm._v(" "), _c('div', {
+  })) + "\n          " + _vm._s(_vm.__startDate.getFullYear()) + "\n        ")]) : _vm._e(), _vm._v(" "), _c('div', {
     staticClass: "monthHeaderYear"
   }, [_c('button', {
     class: _vm.buttonClass,
@@ -343,8 +342,8 @@ var __vue_staticRenderFns__ = [];
 
 const __vue_inject_styles__ = function (inject) {
   if (!inject) return;
-  inject("data-v-558e8f5a_0", {
-    source: ".day[data-v-558e8f5a]{font-weight:700}.item[data-v-558e8f5a]{text-align:center;font-size:15px;width:100%}.monthHeaderMonth[data-v-558e8f5a]{font-size:1.5em;font-weight:700;padding:10px}.item>.selectable[data-v-558e8f5a]{padding:10px;border-radius:50%;color:2a96cc;border:2px solid #2a96cc;color:#2a96cc;cursor:pointer}.item>.selected[data-v-558e8f5a]{padding:10px;border-radius:50%;background-color:#2a96cc;color:#fff;border:1px solid #2a96cc}.item>.nonSelectable[data-v-558e8f5a]{color:gray}.today[data-v-558e8f5a]{font-weight:bolder;text-decoration:underline}.monthHeaderMonth[data-v-558e8f5a]{text-align:center}.monthHeaderYear[data-v-558e8f5a]{text-align:right}.monthHeader[data-v-558e8f5a]{grid-column-start:1;grid-column-end:span 7;min-width:100%;border-bottom:solid 1px #efefef;padding-bottom:10px}.monthWrapper[data-v-558e8f5a]{display:grid;grid-template-columns:50px auto 50px}.wrapper[data-v-558e8f5a]{display:grid;justify-items:center;grid-template-columns:repeat(7,40px);grid-template-rows:repeat(10,45px);gap:5px;align-items:center;justify-content:center;align-content:stretch}",
+  inject("data-v-71487843_0", {
+    source: "*[data-v-71487843]{font-size:8px}.day[data-v-71487843]{font-weight:700}.item[data-v-71487843]{text-align:center}.monthHeaderMonth[data-v-71487843]{font-size:1.5em;font-weight:700;padding:10px}.item>.selectable[data-v-71487843]{padding:10px;border-radius:50%;color:2a96cc;border:2px solid #2a96cc;color:#2a96cc;cursor:pointer}.item>.selected[data-v-71487843]{padding:10px;border-radius:50%;background-color:#2a96cc;color:#fff;border:1px solid #2a96cc}.item>.nonSelectable[data-v-71487843]{color:gray}.today[data-v-71487843]{font-weight:bolder;text-decoration:underline}.monthHeaderMonth[data-v-71487843]{text-align:center}.monthHeaderYear[data-v-71487843]{text-align:right}.monthHeader[data-v-71487843]{grid-column-start:1;grid-column-end:span 7;min-width:100%;border-bottom:solid 1px #efefef;padding-bottom:10px}.monthWrapper[data-v-71487843]{display:grid;grid-template-columns:50px auto 50px}.wrapper[data-v-71487843]{display:grid;justify-items:center;grid-template-columns:repeat(7,40px);grid-template-rows:repeat(6,40px);gap:5px;align-items:center}",
     map: undefined,
     media: undefined
   });
@@ -352,7 +351,7 @@ const __vue_inject_styles__ = function (inject) {
 /* scoped */
 
 
-const __vue_scope_id__ = "data-v-558e8f5a";
+const __vue_scope_id__ = "data-v-71487843";
 /* module identifier */
 
 const __vue_module_identifier__ = undefined;
