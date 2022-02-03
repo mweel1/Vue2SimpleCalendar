@@ -19,17 +19,11 @@
           </div>
         </div>
       </div>
+
       <div class="day" v-for="d in days">{{ d }}</div>
+
       <div class="item" v-for="c in calendar">
-        <div v-if="isSelected(c)" class="selected">{{ c }}</div>
-        <div
-          v-else-if="isSelectable(c)"
-          :class="selectableClass"
-          @click="daySelected(c)"
-        >
-          {{ c }}
-        </div>
-        <div v-else class="nonSelectableClass">
+        <div @click="daySelected(c)" :class="getDayClasses(c)">
           {{ c }}
         </div>
       </div>
@@ -56,10 +50,35 @@ export default /*#__PURE__*/ {
       selectable: true,
     };
   },
+  watch: {
+    startDate(newDate) {
+      console.log("start date watch");
+      this._startDate = new Date(newDate);
+      this.bind();
+    },
+  },
   created() {
     this.bind();
   },
   methods: {
+    isToday(d) {
+      let todayDay = new Date().getDate();
+      return d == todayDay;
+    },
+    getDayClasses(d) {
+      let c;
+
+      console.log(d);
+      if (this.isSelected(d)) c = "selected ";
+      else if (this.isSelectable(d)) c = "selectable ";
+      else c = "nonSelectable ";
+
+      if (this.isToday(d)) {
+        c = c + "today";
+      }
+
+      return c;
+    },
     daySelected(day) {
       this.selectedDay = day;
 
@@ -68,13 +87,20 @@ export default /*#__PURE__*/ {
         this._startDate.getMonth(),
         day
       );
+
       this.$emit("daySelected", dt);
     },
     isSelected(day) {
       return this.selectedDay == day;
     },
     moveMonth(a) {
+      this._startDate = new Date(
+        this._startDate.getFullYear(),
+        this._startDate.getMonth() + a,
+        1
+      );
       this._startDate.setMonth(this._startDate.getMonth() + a);
+      this.$emit("monthChanged", this._startDate);
       this.bind();
     },
     bind() {
@@ -119,20 +145,12 @@ export default /*#__PURE__*/ {
 
 <style scoped>
 .day {
-  text-align: center;
-  padding: 2px;
-  text-align: center;
-  width: 40px;
-  margin-top: 15px;
-  margin-left: 2px;
-  margin-right: 2px;
+  font-weight: bold;
 }
 .item {
   text-align: center;
-  padding: 2px;
-  text-align: center;
-  width: 40px;
-  margin: 2px;
+
+  width: 100%;
 }
 
 .monthHeaderMonth {
@@ -158,9 +176,13 @@ export default /*#__PURE__*/ {
   border: 1px solid #2a96cc;
 }
 
-.item > .nonSelectableClass {
-  padding: 10px;
+.item > .nonSelectable {
   color: gray;
+}
+
+.today {
+  font-weight: bolder;
+  text-decoration: underline;
 }
 
 .monthHeaderMonth {
@@ -172,19 +194,22 @@ export default /*#__PURE__*/ {
 .monthHeader {
   grid-column-start: 1;
   grid-column-end: span 7;
-  border-bottom: solid 1px #ccc;
+  min-width: 100%;
+  border-bottom: solid 1px #efefef;
+  padding-bottom: 10px;
 }
 .monthWrapper {
   display: grid;
-  margin: 5px;
   grid-template-columns: 50px auto 50px;
 }
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  justify-items: center;
+  grid-template-columns: repeat(7, 40px);
+  grid-template-rows: repeat(10, 45px);
+  gap: 5px;
+  align-items: center;
   justify-content: center;
-}
-.day {
-  font-weight: 400;
+  align-content: stretch;
 }
 </style>
